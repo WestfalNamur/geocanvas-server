@@ -1,0 +1,4 @@
+{
+    "python.formatting.provider": "autopep8",
+    "python.pythonPath": "/home/stefan/coding/gempy-canvas-server/env/bin/python"
+}
