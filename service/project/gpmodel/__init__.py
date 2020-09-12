@@ -2,7 +2,7 @@
 """  Gempy model instance. """
 
 import gempy as gp  # type: ignore
-from project.gpmodel.default_model import setup_default_model_large
+from project.gpmodel.default_model import setup_default_model_small
 # instantiate the geo_model
 geo_model = gp.create_model("BaseModel")
 
@@ -21,4 +21,4 @@ gp.set_interpolation_data(
 )
 
 # setup default model
-setup_default_model_large()
+setup_default_model_small()

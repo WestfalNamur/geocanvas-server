@@ -62,37 +62,3 @@ class TestDataApiConfiguration(BaseTestCase):
             ['rock1', 'rock2'],
             list(response_data['data'].keys())
         )
-
-    def test_get_entropy_map(self):
-
-        # setup default model
-        def_mod.setup_default_model()
-        # make request and load response data
-        response = self.client.get('/geo-model/compute/section/entropy')
-        response_data = json.loads(response.data.decode())
-        # process response to ndarry in right shape (sections shape)
-        entropy_map_flattened = response_data['data']
-        entropy_map_ndarray = np.array(entropy_map_flattened).reshape(200, 200)
-        # save for check
-        fig = plt.figure()
-        plt.imshow(entropy_map_ndarray)
-        fig.savefig(
-            PROJECT_PATH
-            + '/tests/snapshots/'
-            + 'entropy_map_new'
-            + '.png'
-        )
-        self.assertEqual(response.status_code, 200)
-
-    def test_get_entropy_map_img(self):
-
-        # setup default model
-        def_mod.setup_default_model()
-        # make request and load response data
-        response = self.client.get('/geo-model/compute/section/entropy-img')
-        response_data = json.loads(response.data.decode())
-        im_bytes_64_str = response_data['data']
-        im_bytes_64 = bytes(im_bytes_64_str, 'utf8')
-        im_bytes = base64.b64decode(im_bytes_64)
-        im = Image.frombytes('F', (200, 200), im_bytes)
-        im.show()
