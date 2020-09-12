@@ -1,10 +1,8 @@
+# Python cache
 __pycache__
 
 # enviroment
-# env/  # to store stable enviroment
-
-# gempy-dev
-gempy/
+env/
 
 # Jupyter
 .ipynb_checkpoints
