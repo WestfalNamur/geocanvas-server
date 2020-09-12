@@ -24,18 +24,18 @@ def setup_default_model_small():
     geo_data_func.mutate_geo_model_extent(
         new_geo_model_extent={
             "x_min": 0,
-            "x_max": 650,
+            "x_max": 1000,
             "y_min": 0,
-            "y_max": 650,
+            "y_max": 1000,
             "z_min": 0,
-            "z_max": 435,
+            "z_max": 1000,
         })
 
     # geo-model-section
     geo_data_func.mutate_section(new_section={
-        'p1': [0, 200],
-        'p2': [650, 200],
-        'resolution': [650, 435]
+        'p1': [0, 500],
+        'p2': [1000, 500],
+        'resolution': [200, 200]
     })
 
     # topology ----------------------------------------------------------------
@@ -65,6 +65,11 @@ def setup_default_model_small():
         'name': 'rock1',
         'serie': 'Strat_Series',
         'order_surface': 1
+    })
+    geo_data_func.mutate_geo_model_surface(surface={
+        'name': 'rock2',
+        'serie': 'Strat_Series',
+        'order_surface': 2
     })
 
     # geo-data ----------------------------------------------------------------
