@@ -56,7 +56,22 @@ def update_series(
 
     # remove old state  # gempy does not allow emtpy sereies
     old_series = geo_model.series.df.index.to_list()
-    geo_model.add_series(series_list=['TO_DELETE'])
+
+    try:
+
+        geo_model.add_series(series_list=['TO_DELETE'])
+
+    except:
+
+        pass   
+
+    try:
+
+        geo_model.add_series(series_list=['TO_DELETE'])
+
+    except:
+
+        pass
 
     try:
 
