@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import copy
 import getpass
-from PIL import Image  # type: ignore
+from PIL import Image, ImageOps  # type: ignore
 
 import jsonschema  # type: ignore
 from flask import Blueprint, request, send_file
@@ -152,6 +152,7 @@ class EntropyMapImage(Resource):
         filename = PROJECT_PATH + 'ie.jpg'
         return send_file(filename, mimetype='image/jpg')
 
+
 class MultiContours(Resource):
 
     def get(self):
@@ -163,7 +164,6 @@ class MultiContours(Resource):
         extent = list(geo_data.geo_model_extent.values())
         surface_points_original_df = geo_data.surface_points_df
         surface_points_copy = copy.deepcopy(geo_data.surface_points_df)
-
 
         contours = uq_runs.calc_multi_real_contours(
             surface_points_copy=surface_points_copy,
@@ -178,6 +178,7 @@ class MultiContours(Resource):
             message="Mutli realization of contours",
             code=200)
 
+
 class OutcropImg(Resource):
 
     def get(self):
@@ -187,11 +188,13 @@ class OutcropImg(Resource):
         filepath = f'/home/{user}/Desktop/outcrop.jpg'
         # Tilt it
         im = Image.open(filepath)
-        out = im.rotate(180)
+        im_rotated = im.rotate(180)
+        im_mirror = ImageOps.mirror(im_rotated)
         filepath = f'/home/{user}/Pictures/rotated.jpg'
-        out.save(filepath)
+        im_mirror.save(filepath)
         # Send it
         return send_file(filepath, mimetype='image/jpg')
+
 
 ###############################################################################
 ###                             Register Ressources                         ###
