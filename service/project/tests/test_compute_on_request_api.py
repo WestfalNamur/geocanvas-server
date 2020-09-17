@@ -63,7 +63,7 @@ class TestDataApiConfiguration(BaseTestCase):
             list(response_data['data'].keys())
         )
 
-    def test_get_entropy_map(self):
+    def _test_get_entropy_map(self):
 
         # setup default model
         def_mod.setup_default_model()
@@ -84,7 +84,7 @@ class TestDataApiConfiguration(BaseTestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    def test_get_entropy_map_img(self):
+    def _test_get_entropy_map_img(self):
 
         # setup default model
         def_mod.setup_default_model()
@@ -96,3 +96,12 @@ class TestDataApiConfiguration(BaseTestCase):
         im_bytes = base64.b64decode(im_bytes_64)
         im = Image.frombytes('F', (200, 200), im_bytes)
         im.show()
+
+    def test_get_mulit_real_contours(self):
+
+        # setup default model
+        def_mod.setup_default_model()
+        response = self.client.get('/geo-model/compute/section/multi-contours')
+        response_data = json.loads(response.data.decode())
+        contours = response_data['data']
+        self.assertEqual(response.status_code, 200)

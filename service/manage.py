@@ -9,7 +9,7 @@ from flask.cli import FlaskGroup
 
 from project import create_app
 
-# Typechecking /project
+# Typechecking /project before any other cllien command is executed;
 mypy_result = mypy_api.run(['project/'])
 if mypy_result[2]:
     print('Error during type-checking. Script execution stoped.')
@@ -81,22 +81,6 @@ def testcomputes():
         'project/tests', pattern='test_compute*.py')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
-        return 0
-    sys.exit(result)
-
-
-@cli.command()
-def cov():
-    """Runs the unit tests with coverage."""
-    tests = unittest.TestLoader().discover('project/tests')
-    result = unittest.TextTestRunner(verbosity=2).run(tests)
-    if result.wasSuccessful():
-        COV.stop()
-        COV.save()
-        print('Coverage Summary:')
-        COV.report()
-        COV.html_report()
-        COV.erase()
         return 0
     sys.exit(result)
 

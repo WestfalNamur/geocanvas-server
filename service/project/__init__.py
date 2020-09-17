@@ -1,5 +1,8 @@
 """ Flask app factory for geo-model-app-process. """
 
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
 
 from flask import Flask
 from flask_cors import CORS  # type: ignore

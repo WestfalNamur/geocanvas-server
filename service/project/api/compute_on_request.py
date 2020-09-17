@@ -2,6 +2,9 @@ import base64
 import io
 import os
 from pathlib import Path
+import copy
+import getpass
+from PIL import Image  # type: ignore
 
 import jsonschema  # type: ignore
 from flask import Blueprint, request, send_file
@@ -149,16 +152,46 @@ class EntropyMapImage(Resource):
         filename = PROJECT_PATH + 'ie.jpg'
         return send_file(filename, mimetype='image/jpg')
 
+class MultiContours(Resource):
+
+    def get(self):
+
+        mapping_object = real_setup.creat_mapping_object(
+            series_df=geo_data.series_df,
+            surfaces_df=geo_data.surfaces_df
+        )
+        extent = list(geo_data.geo_model_extent.values())
+        surface_points_original_df = geo_data.surface_points_df
+        surface_points_copy = copy.deepcopy(geo_data.surface_points_df)
+
+
+        contours = uq_runs.calc_multi_real_contours(
+            surface_points_copy=surface_points_copy,
+            surface_points_original_df=surface_points_copy,
+            extent=extent,
+            geo_model=geo_model,
+            mapping_object=mapping_object
+        )
+
+        return hfunc.success_response(
+            data=contours,
+            message="Mutli realization of contours",
+            code=200)
 
 class OutcropImg(Resource):
 
     def get(self):
 
-        filename = PROJECT_PATH + '/outcropa.jpg'
-        print(' ')
-        print('filename: ', filename)
-        return send_file(filename, mimetype='image/jpg')
-
+        # Load img
+        user = getpass.getuser()
+        filepath = f'/home/{user}/Desktop/outcrop.jpg'
+        # Tilt it
+        im = Image.open(filepath)
+        out = im.rotate(180)
+        filepath = f'/home/{user}/Pictures/rotated.jpg'
+        out.save(filepath)
+        # Send it
+        return send_file(filepath, mimetype='image/jpg')
 
 ###############################################################################
 ###                             Register Ressources                         ###
@@ -191,4 +224,9 @@ api.add_resource(
 api.add_resource(
     OutcropImg,
     '/geo-model/compute/section/outcrop-image'
+)
+
+api.add_resource(
+    MultiContours,
+    '/geo-model/compute/section/multi-contours'
 )

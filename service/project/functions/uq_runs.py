@@ -3,6 +3,7 @@ import copy
 import numpy as np  # type: ignore
 import gempy as gp  # type: ignore
 import scipy.stats as ss  # type: ignore
+from skimage import measure  # type: ignore
 
 
 def manipulate_surface_points_inplace(surface_points_copy, surface_points_original_df):
@@ -164,3 +165,102 @@ def calulate_entropy_map(
     )
 
     return entropy_map
+
+
+def calc_multi_real_contours(
+    surface_points_copy,
+    surface_points_original_df,
+    extent,
+    geo_model,
+    mapping_object
+    ):
+
+    contour_lst = {}
+    for real_i in range(10):
+
+        # maniupulate surface points for realization
+        manipulate_surface_points_inplace(
+            surface_points_copy,
+            surface_points_original_df
+        )
+
+        # correct values outside the model boundaries
+        for XYZ_i in ['X', 'Y', 'Z']:
+
+            if XYZ_i == 'X':
+                surface_points_copy['X'][surface_points_copy['X'] < extent[0]] = extent[0]
+                surface_points_copy['X'][surface_points_copy['X'] > extent[1]] = extent[1]
+
+            if XYZ_i == 'Y':
+                surface_points_copy['Y'][surface_points_copy['Y'] < extent[2]] = extent[2]
+                surface_points_copy['Y'][surface_points_copy['Y'] > extent[3]] = extent[3]
+
+            if XYZ_i == 'Z':
+                surface_points_copy['Z'][surface_points_copy['Z'] < extent[4]] = extent[4]
+                surface_points_copy['Z'][surface_points_copy['Z'] > extent[5]] = extent[5]
+
+        # Set manipulated surface points
+        geo_model.set_surface_points(surface_points_copy, update_surfaces=False)
+        gp.map_series_to_surfaces(
+            geo_model=geo_model,
+            mapping_object=mapping_object
+        )
+
+        # update to interpolator
+        geo_model.update_to_interpolator()
+
+        # compute realization
+        try:
+            gp.compute_model(model=geo_model, sort_surfaces=False)
+            print(f'Realization {real_i} computed.')
+        except:
+            print(f'Error in realization {real_i}.')
+            pass
+
+        # get contours
+        # get start and end of section in grid scalar vals array
+        arr_len_0, arr_len_n = geo_model.grid.sections.get_section_args('section')
+
+        # CAUTION: if more section present they have to be indexexed accrodingly;
+        # get shape of section  # 1st and only one here as only one section present.
+        section_shape = geo_model.grid.sections.resolution[0]
+        # extract section scalar values from solutions.sections# [series,serie_pos_0:serie_pos_n]
+        section_scalar_field_values = geo_model.solutions.sections[1][:,arr_len_0:arr_len_n]
+
+        # number scalar field blocks
+        n_scalar_field_blocks = section_scalar_field_values.shape[0]
+        # creat a dictionary to assemble all scalat field boolen matrices shifts
+        # extract transition towards current level
+        contours = {}
+        for block_i in range(n_scalar_field_blocks):
+
+            # number scalar field blocks
+            n_scalar_field_blocks = section_scalar_field_values.shape[0]
+            # creat a dictionary to assemble all scalat field boolen matrices shifts
+            # extract transition towards current level
+            contours = {}
+            for scalar_field_block_i in range(n_scalar_field_blocks):
+
+                # scalarfield values of scalarfield_block-i
+                block = section_scalar_field_values[scalar_field_block_i, :]
+                # ??? level
+                level = geo_model.solutions.scalar_field_at_surface_points[scalar_field_block_i][np.where(
+                    geo_model.solutions.scalar_field_at_surface_points[scalar_field_block_i] != 0)]
+                # ??? calulcate scalarfeild levels
+                levels = np.insert(level, 0, block.max())
+                # extract and reshape scalar field values
+                scalar_field = block.reshape(section_shape)
+                # loop over levels to extract tops present within current scalar field
+                for lvl_i in range(len(levels)):
+
+                    # get top name
+                    top_name = geo_model.surfaces.df['surface'][lvl_i]
+                    # Find contour
+                    contour = measure.find_contours(scalar_field, levels[lvl_i])
+                    # add contour to contoures if there are some
+                    if len(contour) > 0:
+
+                        contour_lst[f'real_{real_i}_{top_name}'] = contour[0].flatten().tolist()
+
+    return contour_lst
+        
