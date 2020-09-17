@@ -58,27 +58,18 @@ def update_series(
     old_series = geo_model.series.df.index.to_list()
 
     try:
-
         geo_model.add_series(series_list=['TO_DELETE'])
-
     except:
-
-        pass   
+        pass  
 
     try:
-
         geo_model.add_series(series_list=['TO_DELETE'])
-
     except:
-
         pass
 
     try:
-
         geo_model.delete_series(old_series)
-
     except:
-
         pass
 
     # set new state  # sort by order
@@ -89,11 +80,8 @@ def update_series(
 
     # HOTFIX
     try:
-
         geo_model.delete_series(['TO_DELETE'])
-
     except:
-
         pass
 
     print('HOTFIX in update_series()')

@@ -3,7 +3,8 @@ import io
 import os
 from pathlib import Path
 import copy
-
+import getpass
+from PIL import Image  # type: ignore
 
 import jsonschema  # type: ignore
 from flask import Blueprint, request, send_file
@@ -151,16 +152,6 @@ class EntropyMapImage(Resource):
         filename = PROJECT_PATH + 'ie.jpg'
         return send_file(filename, mimetype='image/jpg')
 
-
-class OutcropImg(Resource):
-
-    def get(self):
-
-        filename = PROJECT_PATH + '/outcropa.jpg'
-        print(' ')
-        print('filename: ', filename)
-        return send_file(filename, mimetype='image/jpg')
-
 class MultiContours(Resource):
 
     def get(self):
@@ -186,6 +177,21 @@ class MultiContours(Resource):
             data=contours,
             message="Mutli realization of contours",
             code=200)
+
+class OutcropImg(Resource):
+
+    def get(self):
+
+        # Load img
+        user = getpass.getuser()
+        filepath = f'/home/{user}/Desktop/outcrop.jpg'
+        # Tilt it
+        im = Image.open(filepath)
+        out = im.rotate(180)
+        filepath = f'/home/{user}/Pictures/rotated.jpg'
+        out.save(filepath)
+        # Send it
+        return send_file(filepath, mimetype='image/jpg')
 
 ###############################################################################
 ###                             Register Ressources                         ###
