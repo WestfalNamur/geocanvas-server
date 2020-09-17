@@ -1,0 +1,35 @@
+Traceback (most recent call last):
+  File "/home/namur/coding/server/env/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/namur/coding/server/env/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/namur/coding/server/env/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
+    resp = resource(*args, **kwargs)
+  File "/home/namur/coding/server/env/lib/python3.6/site-packages/flask/views.py", line 88, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/namur/coding/server/env/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
+    resp = meth(*args, **kwargs)
+  File "/home/namur/coding/server/service/project/api/compute_on_request.py", line 66, in get
+    real_run.run_realization()
+  File "/home/namur/coding/server/service/project/functions/realization_runs.py", line 118, in run_realization
+    orientations_original_df=geo_data.orientations_df
+  File "/home/namur/coding/server/service/project/functions/realization_setup.py", line 183, in setup_realization
+    update_series(geo_model, series_df)
+  File "/home/namur/coding/server/service/project/functions/realization_setup.py", line 88, in update_series
+    geo_model.add_series(new_series)
+  File "/home/namur/coding/server/env/lib/python3.6/site-packages/gempy/core/model.py", line 285, in add_series
+    self.series.add_series(series_list, reset_order_series)
+  File "/home/namur/coding/server/env/lib/python3.6/site-packages/gempy/core/data.py", line 568, in add_series
+    self.update_faults_index_rename()
+  File "/home/namur/coding/server/env/lib/python3.6/site-packages/gempy/core/data.py", line 670, in update_faults_index_rename
+    self.faults.faults_relations_df.index = idx
+  File "/home/namur/coding/server/env/lib/python3.6/site-packages/pandas/core/generic.py", line 5149, in __setattr__
+    return object.__setattr__(self, name, value)
+  File "pandas/_libs/properties.pyx", line 66, in pandas._libs.properties.AxisProperty.__set__
+  File "/home/namur/coding/server/env/lib/python3.6/site-packages/pandas/core/generic.py", line 564, in _set_axis
+    self._mgr.set_axis(axis, labels)
+  File "/home/namur/coding/server/env/lib/python3.6/site-packages/pandas/core/internals/managers.py", line 227, in set_axis
+    f"Length mismatch: Expected axis has {old_len} elements, new "
+ValueError: Length mismatch: Expected axis has 3 elements, new values have 0 elements
+127.0.0.1 - - [13/Sep/2020 15:01:17] "GET /geo-model/compute/section/contours HTTP/1.1" 500 -
+

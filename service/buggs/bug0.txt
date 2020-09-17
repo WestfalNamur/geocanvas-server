@@ -1,0 +1,17 @@
+  File "/home/namur/coding/server/service/project/api/compute_on_request.py", line 63, in get
+    real_run.run_realization()
+  File "/home/namur/coding/server/service/project/functions/realization_runs.py", line 118, in run_realization
+    orientations_original_df=geo_data.orientations_df
+  File "/home/namur/coding/server/service/project/functions/realization_setup.py", line 180, in setup_realization
+    set_congiguration(geo_model, geo_model_extent, section)
+  File "/home/namur/coding/server/service/project/functions/realization_setup.py", line 39, in set_congiguration
+    geo_model.set_section_grid(section_dict=section_dict)
+  File "/home/namur/coding/server/env/lib/python3.6/site-packages/gempy/core/model.py", line 259, in set_section_grid
+    self.update_from_grid()
+  File "/home/namur/coding/server/env/lib/python3.6/site-packages/gempy/core/model.py", line 142, in update_from_grid
+    self.interpolator.set_initial_results_matrices()
+  File "/home/namur/coding/server/env/lib/python3.6/site-packages/gempy/core/interpolator.py", line 854, in set_initial_results_matrices
+    self._compute_len_series()
+  File "/home/namur/coding/server/env/lib/python3.6/site-packages/gempy/core/interpolator.py", line 729, in _compute_len_series
+    len_series_f_ = self.faults.faults_relations_df.values[non_zero][:, non_zero].sum(axis=0)
+
